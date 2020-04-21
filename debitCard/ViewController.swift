@@ -8,59 +8,118 @@
 
 import UIKit
 
-class ViewController: UIViewController {
 
-    @IBOutlet weak var tf: UITextField!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tf.addTarget(self, action: #selector(textFieldAction(_:)), for: UIControl.Event.allEditingEvents)
-        
-    }
-    
-    
-    
-    
-  
-    
-    
-    
-    @objc func textFieldAction(_ textField: UITextField) {
 
-        let charToInsert = "-"
-        let posOfInsertion = 5
+class x:NSObject {
+    
+    
+    var count = 0
+    
+    
+    func formatTextfield(textField:UITextField,charToInSert:String,posOfInsertion :[Int],isExpiryType:Bool) {
         
-        formatTextfield(textField: textField, charToInSert: charToInsert, posOfInsrtion: posOfInsertion)
+        var tempPosOfInsertion = posOfInsertion.sorted()
         
-    }
-    
-    
-    
-    func formatTextfield(textField:UITextField,charToInSert:String,posOfInsrtion :Int) {
+        for i in 0...tempPosOfInsertion.count - 1 {
+            tempPosOfInsertion[i] += 1
+        }
+        
         
         if isdeletionInrogressV_1(textField: textField) {
+            if count > noOfOccurences(char: "-", string: textField.text!) {
+                
+                count -= 1
+                
+            }
+            print("*********")
             
         }
         else {
             
-            if textField.text!.count % (posOfInsrtion) == 0 && textField.text!.count != 0 {
+            if isExpiryType {
                 
-                var tfText = textField.text!
-                let lastChar = String(tfText.removeLast())
-                tfText += charToInSert
-                tfText += lastChar
-                textField.text = tfText
                 
-                updateCurrTextAndPreviousTxt(textField: textField)
+                let dateFromatter = DateFormatter()
+                dateFromatter.dateFormat = "YY"
+                let monthMaxValue = Int(dateFromatter.string(from: Date()))! + 15
+                
+                
+                
+                if textField.text!.count == 2 {
+                    
+                    if Int(getValuesAt(text: textField.text!, index: [0,1]))! >= 12 {
+                        textField.text?.removeLast()
+                        
+                    }
+                    
+                }
+                else if (textField.text!.count == 5 && Int(getValuesAt(text: textField.text!, index: [3,4]))! > monthMaxValue) {
+                    textField.text?.removeLast()
+                }
+                else {
+                    if(tempPosOfInsertion.count-1 >= count) {
+                        
+                        
+                        
+                        if textField.text!.count == tempPosOfInsertion[count] && textField.text!.count != 0 {
+                            count += 1
+                            print("++++++ : ",count)
+                            var tfText = textField.text!
+                            let lastChar = String(tfText.removeLast())
+                            tfText += charToInSert
+                            tfText += lastChar
+                            textField.text = tfText
+                            
+                            updateCurrTextAndPreviousTxt(textField: textField)
+                        }
+                        
+                    }
+                }
+                
+                
+                
             }
+            else {
+                if(tempPosOfInsertion.count-1 >= count) {
+                    
+                    
+                    
+                    if textField.text!.count == tempPosOfInsertion[count] && textField.text!.count != 0 {
+                        count += 1
+                        print("++++++ : ",count)
+                        var tfText = textField.text!
+                        let lastChar = String(tfText.removeLast())
+                        tfText += charToInSert
+                        tfText += lastChar
+                        textField.text = tfText
+                        
+                        updateCurrTextAndPreviousTxt(textField: textField)
+                    }
+                    
+                }
+            }
+            
+            
+            
+            
             
         }
         
         
-    }
         
+        
+    }
     
+    
+    func getValuesAt(text:String,index:[Int]) -> String {
+        let tftext = Array(text)
+        var result = String()
+        for i in index.sorted() {
+            result += String(tftext[i])
+            
+        }
+        return result
+    }
     
     
     var previousTxt:String?
@@ -98,7 +157,225 @@ class ViewController: UIViewController {
     }
     
     
+    func noOfOccurences(char:String,string:String) -> Int {
+        
+        let charArray = Array(string)
+        var count = 0
+        for c in charArray {
+            if String(c) == char {
+                count += 1
+            }
+        }
+        return count
+    }
+    
+    
+    
+    
+    
+    
+}
+
+
+
+
+class ViewController: UIViewController {
+
+    @IBOutlet weak var tf: UITextField!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tf.addTarget(self, action: #selector(textFieldAction(_:)), for: UIControl.Event.allEditingEvents)
+    }
+    
+    
+    
+    
+  
+    
+    
+    
+    @objc func textFieldAction(_ textField: UITextField) {
+
+        let charToInsert = "-"
+        let posOfInsertion = [2]
        
+        let m = x()
+        
+        m.formatTextfield(textField: textField, charToInSert: charToInsert, posOfInsertion: posOfInsertion, isExpiryType:false)
+        
+       
+        
+    }
+    
+
+        
+//        var count = 0
+//        func formatTextfield(textField:UITextField,charToInSert:String,posOfInsertion :[Int],isExpiryType:Bool) {
+//
+//            var tempPosOfInsertion = posOfInsertion.sorted()
+//
+//            for i in 0...tempPosOfInsertion.count - 1 {
+//                tempPosOfInsertion[i] += 1
+//            }
+//
+//
+//            if isdeletionInrogressV_1(textField: textField) {
+//                if count > noOfOccurences(char: "-", string: textField.text!) {
+//
+//                    count -= 1
+//
+//                }
+//
+//            }
+//            else {
+//
+//                if isExpiryType {
+//
+//
+//                    let dateFromatter = DateFormatter()
+//                    dateFromatter.dateFormat = "YY"
+//                    let monthMaxValue = Int(dateFromatter.string(from: Date()))! + 15
+//
+//
+//
+//                    if textField.text!.count == 2 {
+//
+//                        if Int(getValuesAt(text: textField.text!, index: [0,1]))! >= 12 {
+//                            textField.text?.removeLast()
+//
+//                        }
+//
+//                    }
+//                    else if (textField.text!.count == 5 && Int(getValuesAt(text: textField.text!, index: [3,4]))! > monthMaxValue) {
+//                            textField.text?.removeLast()
+//                    }
+//                    else {
+//                        if(tempPosOfInsertion.count-1 >= count) {
+//
+//
+//
+//                            if textField.text!.count == tempPosOfInsertion[count] && textField.text!.count != 0 {
+//                                count += 1
+//                                print("++++++ : ",count)
+//                                var tfText = textField.text!
+//                                let lastChar = String(tfText.removeLast())
+//                                tfText += charToInSert
+//                                tfText += lastChar
+//                                textField.text = tfText
+//
+//                                updateCurrTextAndPreviousTxt(textField: textField)
+//                            }
+//
+//                        }
+//                    }
+//
+//
+//
+//                }
+//                else {
+//                    if(tempPosOfInsertion.count-1 >= count) {
+//
+//
+//
+//                        if textField.text!.count == tempPosOfInsertion[count] && textField.text!.count != 0 {
+//                            count += 1
+//                            print("++++++ : ",count)
+//                            var tfText = textField.text!
+//                            let lastChar = String(tfText.removeLast())
+//                            tfText += charToInSert
+//                            tfText += lastChar
+//                            textField.text = tfText
+//
+//                            updateCurrTextAndPreviousTxt(textField: textField)
+//                        }
+//
+//                    }
+//                }
+//
+//
+//
+//
+//
+//            }
+//
+//
+//
+//
+//        }
+//
+//
+//    func getValuesAt(text:String,index:[Int]) -> String {
+//        let tftext = Array(text)
+//        var result = String()
+//        for i in index.sorted() {
+//            result += String(tftext[i])
+//
+//        }
+//        return result
+//    }
+//
+//
+//    var previousTxt:String?
+//    var currTxt:String?
+//
+//    func isdeletionInrogressV_1(textField:UITextField) -> Bool {
+//
+//        let tfText = textField.text!
+//
+//        previousTxt = currTxt
+//
+//        currTxt = tfText
+//
+//
+//
+//        if currTxt!.count < previousTxt?.count ?? -1 {
+//
+//            return true
+//
+//        }
+//        else {
+//
+//            return false
+//        }
+//
+//
+//    }
+//
+//
+//    func updateCurrTextAndPreviousTxt(textField:UITextField) {
+//        previousTxt = currTxt
+//
+//        currTxt = textField.text!
+//
+//    }
+//
+//
+//    func noOfOccurences(char:String,string:String) -> Int {
+//
+//        let charArray = Array(string)
+//        var count = 0
+//        for c in charArray {
+//            if String(c) == char {
+//                count += 1
+//            }
+//        }
+//        return count
+//    }
+//
+//
+//
+//
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 }
     
